@@ -6,14 +6,14 @@ from database import Base
 
 class Author(Base):
     __tablename__ = "authors"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False)
     name = Column(String(255), nullable=False, unique=True)
     bio = Column(String(255))
 
 
 class Book(Base):
     __tablename__ = "books"
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, nullable=False)
     title = Column(String(255), nullable=False)
     summary = Column(String(255), nullable=False)
     publication_date = Column(Date, nullable=False)

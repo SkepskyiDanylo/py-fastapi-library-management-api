@@ -24,7 +24,10 @@ def get_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @app.get("/authors/{author_id}", response_model=schemas.AuthorRead)
 def get_author(author_id: int, db: Session = Depends(get_db)):
-    return crud.get_author_by_id(db, author_id)
+    author = crud.get_author_by_id(db, author_id)
+    if not author:
+        raise HTTPException(status_code=404, detail="Author not found")
+    return author
 
 
 @app.post("/authors/", response_model=schemas.AuthorCreate)
@@ -40,14 +43,22 @@ def create_author(
 
 
 @app.get("/books/", response_model=list[schemas.BookRead])
-def get_books(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    books = crud.get_all_books(db=db, skip=skip, limit=limit)
+def get_books(
+    skip: int = 0,
+    limit: int = 100,
+    author_id: int | None = None,
+    db: Session = Depends(get_db),
+):
+    books = crud.get_all_books(db=db, skip=skip, limit=limit, author_id=author_id)
     return books
 
 
 @app.get("/books/{book_id}", response_model=schemas.BookRead)
 def get_book(book_id: int, db: Session = Depends(get_db)):
-    return crud.get_book_by_id(db, book_id)
+    book = crud.get_book_by_id(db, book_id)
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return book
 
 
 @app.post("/books/", response_model=schemas.BookCreate)
