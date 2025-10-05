@@ -16,7 +16,7 @@ def get_db():
         db.close()
 
 
-@app.get("/authors/", response_model=schemas.AuthorRead)
+@app.get("/authors/", response_model=list[schemas.AuthorRead])
 def get_authors(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     authors = crud.get_all_authors(db=db, skip=skip, limit=limit)
     return authors
@@ -35,7 +35,7 @@ def create_author(
     author: schemas.AuthorCreate,
     db: Session = Depends(get_db),
 ):
-    existing = crud.get_author_by_id(db, author.id)
+    existing = crud.get_author_by_name(db, author.name)
     if existing:
         raise HTTPException(status_code=400, detail="Author already exists")
 
